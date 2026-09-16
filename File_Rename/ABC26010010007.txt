@@ -1,0 +1,2 @@
+Color: Gold
+Test result: Fail
