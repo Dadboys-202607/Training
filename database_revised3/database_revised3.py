@@ -68,19 +68,18 @@ def main():
                 for c in range(dim.min, dim.max + 1):
                     new_sheet.column_dimensions[get_column_letter(c)].width = dim.width
             # headerはDatabase.xlsxと同じ内容をコピー
-            for row in sheet.iter_rows(min_row=1, max_row=1, values_only=True):
-                new_sheet.append(row)
-                # ターゲットの住民票コードをDatabase.xlsxの住民票コードと比較し、一致したら一行追加
-                for row in sheet.iter_rows(min_row=2,values_only=True):
-                    # row[1]:B列(住民票コード)
-                    if j_code[i] == row[1]:
-                        new_sheet.append(row)
+            new_sheet.append([cell.value for cell in sheet[1]])
+            # ターゲットの住民票コードをDatabase.xlsxの住民票コードと比較し、一致したら一行追加
+            for row in sheet.iter_rows(min_row=2,values_only=True):
+                # row[1]:B列(住民票コード)
+                if j_code[i] == row[1]:
+                    new_sheet.append(row)
 
-                # シート名が"住民台帳"意外だった場合はA,B列の3行目以降を削除
-                if sheet.title != "住民台帳":
-                    for row in range(3, new_sheet.max_row + 1):
-                        for col in range(1, 3):
-                            new_sheet.cell(row=row, column=col).value = None
+            # シート名が"住民台帳"以外だった場合はA,B列の3行目以降を削除
+            if sheet.title != "住民台帳":
+                for row in range(3, new_sheet.max_row + 1):
+                    for col in range(1, 3):
+                        new_sheet.cell(row=row, column=col).value = None
 
         new_book.save(out_name[i])
         print(f"{out_name[i]}の作成と書き込みが完了しました。")
